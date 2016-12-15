@@ -2,7 +2,7 @@ defmodule Bandsintown.Artists do
   use Bandsintown.Base
 
   def get(params \\ [artist: nil, artist_id: nil]) do
-    get!("artists/#{artist(params)}.json?#{URI.encode_query(params)}").body
+    get!("artists/#{artist(params)}.json?").body
   end
 
   @doc """
@@ -12,7 +12,7 @@ defmodule Bandsintown.Artists do
     upcoming
     all
   """
-  def events(params \\ [artist: nil, artist_id: nil, date: nil, extended: false]) do
+  def events(params \\ [artist: nil, artist_id: nil, date: "", extended: false]) do
     get!("artists/#{artist(params)}/events.json?extended=#{params[:extended]}&date=#{params[:date]}").body
   end
 
@@ -30,18 +30,26 @@ defmodule Bandsintown.Artists do
     ip address
     use_geoip (will use the ip the request came from)
   """
-  def event_search(query, params \\ [artist: nil, artist_id: nil, date: "yyyy-mm-dd", radius: 25, location: nil]) do
-    get!("artists/#{artist(params)}/events/search.json?date=#{params[:date]}&radius=#{params[:radius]}&location=#{params[:location]}").body
+  def event_search(params \\ [artist: nil, artist_id: nil, date: "", radius: 25, location: ""]) do
+    get!("artists/#{artist(params)}/events/search.json?date=#{date(params)}&radius=#{params[:radius]}&location=#{location(params)}").body
   end
 
   @doc """
   only_recs (boolean) - If true, the response will only include matching events for artists similar to the specified artist. if false, the response may also include matching events for the specified artist.
   """
-  def recommended_events(query, params \\ [artist: nil, artist_id: nil, date: "yyyy-mm-dd", radius: 25, location: nil, only_recs: false]) do
-    get!("artists/#{artist(params)}/events/recommended.json?date=#{params[:date]}&radius=#{params[:radius]}&location=#{params[:location]}&only_recs=#{params[:only_recs]}").body
+  def recommended_events(params \\ [artist: nil, artist_id: nil, date: "", radius: 25, location: "", only_recs: false]) do
+    get!("artists/#{artist(params)}/events/recommended.json?date=#{date(params)}&radius=#{params[:radius]}&location=#{location(params)}&only_recs=#{params[:only_recs]}").body
   end
 
   defp artist(params) do
-    URI.encode_query(params[:artist] || params[:artist_id])
+    URI.encode(params[:artist] || params[:artist_id])
+  end
+
+  defp date(params) do
+    URI.encode(params[:date] || "")
+  end
+
+  defp location(params) do
+    URI.encode(params[:location] || "")
   end
 end

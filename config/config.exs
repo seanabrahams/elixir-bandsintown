@@ -1,10 +1,6 @@
 # This file is responsible for configuring your application
 # and its dependencies with the aid of the Mix.Config module.
 use Mix.Config
-config :bandsintown,
-  app_id: System.get_env("BANDSINTOWN_APP_ID")
-# Remember to load your api key in your system env before iex -S mix
-# export Bandsintown_KEY="<Bandsintown_KEY_HERE>"
 
 # This configuration is loaded before any dependency and is restricted
 # to this project. If another project depends on this project, this
